@@ -1,5 +1,5 @@
 registry: "quay.io"
-image_prefix: "sandromello"
+imagePrefix: "sandromello"
 # The image version to deploy
 version: ""
 
@@ -8,7 +8,7 @@ app:
   env: "production"
   logLevel: "INFO"
   # The GRPC address of discounts api
-  discountsAddress: ""
+  discountsAddress: "discounts-grpc-api"
   # The GRPC port of discounts api
   discountsPort: "5001"
   # Port to listen to grpc gateway
