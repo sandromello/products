@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: products-api
+  labels:
+    app: products-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: products-api
+  template:
+    metadata:
+      labels:
+        app: products-api
+    spec:
+      containers:
+      - name: products-api
+        image: {{ .Values.registry }}/{{ .Values.imagePrefix }}/products-api:{{ .Values.version }}
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: LOG_LEVEL
+          value: "{{ .Values.app.logLevel }}"
+        - name: APP_NAME
+          value: "{{ .Values.app.name }}"
+        - name: APP_ENV
+          value: "{{ .Values.app.env }}"
+        - name: HTTP_PORT
+          value: "8080"
+        - name: GRPC_PORT
+          value: "{{ .Values.app.grpcGatewayPort }}"
+        - name: DISCOUNTS_ADDRESS
+          value: "{{ .Values.app.discountsAddress }}"
+        - name: DISCOUNTS_PORT
+          value: "{{ .Values.app.discountsPort }}"
+        - name: DB_DATABASE
+          value: "{{ .Values.app.dbName }}"
+        - name: DB_HOST
+          value: "{{ .Values.app.dbHost }}"
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: password
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: username
+        ports:
+          - name: http
+            containerPort: 8080
+          - name: grpc
+            containerPort: 5002
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2048Mi
+          requests:
+            cpu: 100m
+            memory: 2048Mi
+        readinessProbe:
+          tcpSocket:
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: products-api
+spec:
+  selector:
+    app: products-api
+  ports:
+    - name: http
+      port: 80
+      containerPort: 8080
+      protocol: TCP
+    - name: grpc
+      port: 5002
+      containerPort: 5002
+      protocol: TCP

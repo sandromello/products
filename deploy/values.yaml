@@ -1,0 +1,23 @@
+registry: "quay.io"
+image_prefix: "sandromello"
+# The image version to deploy
+version: ""
+
+app:
+  name: "products-api"
+  env: "production"
+  logLevel: "INFO"
+  # The GRPC address of discounts api
+  discountsAddress: ""
+  # The GRPC port of discounts api
+  discountsPort: "5001"
+  # Port to listen to grpc gateway
+  grpcGatewayPort: "5002"
+  # The name of the database
+  dbName: "api"
+  # The database username
+  dbUsername: ""
+  # The database password
+  dbPassword: ""
+  # The database address to connect
+  dbHost: ""
