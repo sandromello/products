@@ -6,7 +6,7 @@ test:
 	docker run --rm -it ${REGISTRY}/${IMAGE_PREFIX}/${SHORT_NAME}:${VERSION} yarn test
 
 docker-build:
-	docker build -t ${REGISTRY}/${IMAGE_PREFIX}/${SHORT_NAME}:${VERSION}
+	docker build -t ${REGISTRY}/${IMAGE_PREFIX}/${SHORT_NAME}:${VERSION} .
 
 docker-push:
 	docker push ${REGISTRY}/${IMAGE_PREFIX}/${SHORT_NAME}:${VERSION}
